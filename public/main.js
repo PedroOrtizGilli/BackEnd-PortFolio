@@ -238,7 +238,7 @@ async function catCommand(file) {
         await showAbout();
     } else if (file === 'README.md') {
         addOutput('info', `
-<div class="section-title">📖 README.md</div>
+<div class="section-title">README.md</div>
 
 <pre style="color: #a8dadc; line-height: 1.6;">
 # Portfolio Backend Developer

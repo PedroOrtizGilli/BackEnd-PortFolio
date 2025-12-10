@@ -1,13 +1,33 @@
 const express = require('express');
 const path = require('path');
+const i18next = require('i18next');
+const Backend = require('i18next-fs-backend');
+const middleware = require('i18next-http-middleware');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
 app.use(express.static('public'));
+i18next
+    .use(Backend)
+    .use(middleware.LanguageDetector)
+    .init({
+        fallbackLng: 'es',
+        backend: {
+            loadPath: path.join(__dirname, 'locales/{{lng}}/{{ns}}.json')
+        },
+        detection: {
+            order: ['querystring', 'cookie', 'header'],
+            caches: ['cookie']
+        }
+    });
 
-// Datos de ejemplo (después los podés mover a una BD)
+app.use(middleware.handle(i18next));
+app.use(express.static('public'));
+app.use(express.json());
+
 const projects = [
     {
         id: 1,
@@ -34,7 +54,7 @@ const aboutMe = {
     linkedin: ''
 };
 
-// Rutas API
+//Rutas API
 app.get('/api/projects', (req, res) => {
     res.json(projects);
 });
@@ -55,11 +75,11 @@ app.get('/api/about', (req, res) => {
     res.json(aboutMe);
 });
 
-// Comando especial para ejecutar "comandos"
+//Comando especial para ejecutar "comandos"
 app.post('/api/command', (req, res) => {
     const { command } = req.body;
   
-    // Simulá comandos Linux
+    //Simulá comandos Linux
     if (command === 'whoami') {
         return res.json({ output: aboutMe.name });
     }
