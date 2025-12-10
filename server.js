@@ -1,8 +1,5 @@
 const express = require('express');
 const path = require('path');
-const i18next = require('i18next');
-const Backend = require('i18next-fs-backend');
-const middleware = require('i18next-http-middleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,23 +7,6 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.static('public'));
-i18next
-    .use(Backend)
-    .use(middleware.LanguageDetector)
-    .init({
-        fallbackLng: 'es',
-        backend: {
-            loadPath: path.join(__dirname, 'locales/{{lng}}/{{ns}}.json')
-        },
-        detection: {
-            order: ['querystring', 'cookie', 'header'],
-            caches: ['cookie']
-        }
-    });
-
-app.use(middleware.handle(i18next));
-app.use(express.static('public'));
-app.use(express.json());
 
 const projects = [
     {
